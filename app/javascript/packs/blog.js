@@ -5,11 +5,29 @@
 // All it does is render <div>Hello Vue</div> at the bottom of the page.
 
 import Vue from 'vue'
-import App from './app.vue'
+import { sync } from 'vuex-router-sync'
+import TurbolinksAdapter from 'vue-turbolinks'
+import App from './components/app.vue'
+import VueRouter from 'vue-router'
+import { routes } from './routes.js'
+import { store } from './store/store.js'
+import BootstrapVue from 'bootstrap-vue'
+import lodash from 'lodash'
 
-document.addEventListener('DOMContentLoaded', () => {
-  document.body.appendChild(document.createElement('hello'))
-  const app = new Vue(App).$mount('hello')
+Vue.use(VueRouter)
 
-  console.log(app)
+const router = new VueRouter({
+	routes,
+	mode: 'history'
+})
+
+sync(store, router)
+
+document.addEventListener("turbolinks:load", function(){
+	const app =	new Vue({
+		el: "#app",
+		render: h => h(App),
+		router,
+		store
+	})
 })
