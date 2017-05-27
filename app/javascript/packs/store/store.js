@@ -1,14 +1,20 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import VueResource from 'vue-resource'
+import { router } from '../blog.js'
 
 Vue.use(Vuex)
+Vue.use(VueResource)
+
+Vue.http.options.root = "http://localhost:3000/"
+Vue.http.headers.common['X-CSRF-Token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+
+var post = Vue.resource('posts/{id}');
+var posts = Vue.resource('posts');
 
 export const store = new Vuex.Store({
 	state: {
 		posts: [
-			{id: 1, title: "title1", content: "content1"},
-			{id: 2, title: "title2", content: "content2"},
-			{id: 3, title: "title3", content: "content3"}
 		]
 	},
 	getters: {
@@ -16,18 +22,44 @@ export const store = new Vuex.Store({
 			return state.posts
 		},
 		post: state=> {
-			return _.find(state.posts, {id: state.route.params.id})
-		}
+			return _.find(state.posts, {id: state.route.params.id}) }
 	},
 	mutations: {
 		createPost: (state, payload) => {
-			payload.id = (_.last(state.posts).id + 1)
 			state.posts.push(payload);
+		},
+		getPosts: (state, payload) => {
+			state.posts = payload
+		},
+		deletePost: (state, payload) => {
+			var post = _.find(state.posts, {id: payload})
+			var postIndex = _.indexOf(state.posts, post)
+			state.posts.splice(postIndex, 1)
 		}
 	},
 	actions: {
 		submitNewPost: ({commit}, payload) => {
-			commit('createPost', payload)
+			post.save({post: payload}).then(response => {
+				commit("createPost", response.body)
+				router.push({name: "posts"})
+			}, response =>{
+				alert("error")
+			})
+		},
+		getPosts: ({commit}) => {
+			posts.get().then(response=>{
+				console.log(response.body)
+				commit("getPosts", response.body)
+			}), response =>{
+				alert("error")
+			}
+		},
+		deletePost: ({commit}, payload) =>{
+			post.delete({id: payload.id}).then(response=>{
+				commit("deletePost", payload.id)
+			}, response=>{
+				alert("error")
+			})
 		}
 	}
 })

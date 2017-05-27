@@ -15,7 +15,7 @@ import lodash from 'lodash'
 
 Vue.use(VueRouter)
 
-const router = new VueRouter({
+export const router = new VueRouter({
 	routes
 })
 
@@ -29,3 +29,4 @@ document.addEventListener("turbolinks:load", function(){
 		store
 	})
 })
+

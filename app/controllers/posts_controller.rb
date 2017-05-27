@@ -1,6 +1,17 @@
-class PostController < ApplicationController
+class PostsController < ApplicationController
 	before_action :get_posts, only: [:index]
+	before_action :get_post, only: [:show, :destroy]
+
 	def index
+		render json: @posts
+	end
+
+	def show
+		render json: @post
+	end
+
+	def destroy
+		@post.delete
 	end
 
 	def create
@@ -23,6 +34,10 @@ class PostController < ApplicationController
 
 	def get_posts
 		@posts = Post.all
+	end
+
+	def get_post
+		@post = Post.find(params[:id])
 	end
 
 end

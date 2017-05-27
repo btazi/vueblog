@@ -2,7 +2,8 @@
 	<div>
 		<!-- <h1>{{post.title}}</h1> -->
 		<!-- <p>{{post.content}}</p> -->
-		<p>{{post.title}}</p>
+		<h1>{{post.title}}</h1>
+		<p>{{post.content}}</p>
 	</div>
 </template>
 
