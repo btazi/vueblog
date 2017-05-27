@@ -18,5 +18,16 @@ export const store = new Vuex.Store({
 		post: state=> {
 			return _.find(state.posts, {id: state.route.params.id})
 		}
+	},
+	mutations: {
+		createPost: (state, payload) => {
+			payload.id = (_.last(state.posts).id + 1)
+			state.posts.push(payload);
+		}
+	},
+	actions: {
+		submitNewPost: ({commit}, payload) => {
+			commit('createPost', payload)
+		}
 	}
 })

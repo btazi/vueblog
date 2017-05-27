@@ -6,7 +6,6 @@
 
 import Vue from 'vue'
 import { sync } from 'vuex-router-sync'
-import TurbolinksAdapter from 'vue-turbolinks'
 import App from './components/app.vue'
 import VueRouter from 'vue-router'
 import { routes } from './routes.js'
@@ -17,8 +16,7 @@ import lodash from 'lodash'
 Vue.use(VueRouter)
 
 const router = new VueRouter({
-	routes,
-	mode: 'history'
+	routes
 })
 
 sync(store, router)
