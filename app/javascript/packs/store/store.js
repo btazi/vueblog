@@ -15,14 +15,19 @@ var posts = Vue.resource('posts');
 export const store = new Vuex.Store({
 	state: {
 		posts: [
-		]
+		],
+		formErrors: {}
 	},
 	getters: {
 		posts: state=> {
 			return state.posts
 		},
 		post: state=> {
-			return _.find(state.posts, {id: state.route.params.id}) }
+			return _.find(state.posts, {id: state.route.params.id})
+		},
+		formErrors: state=> {
+			return state.formErrors
+		}
 	},
 	mutations: {
 		createPost: (state, payload) => {
@@ -35,20 +40,24 @@ export const store = new Vuex.Store({
 			var post = _.find(state.posts, {id: payload})
 			var postIndex = _.indexOf(state.posts, post)
 			state.posts.splice(postIndex, 1)
+		},
+		addFormErrors: (state, payload)=> {
+			state.formErrors = payload
+		},
+		clearFormErrors: (state) =>{
+			state.formErrors = {}
 		}
 	},
 	actions: {
 		submitNewPost: ({commit}, payload) => {
 			post.save({post: payload}).then(response => {
 				commit("createPost", response.body)
-				router.push({name: "posts"})
-			}, response =>{
-				alert("error")
+				router.push({name: "posts"})}, response =>{
+					commit("addFormErrors", response.body)
 			})
 		},
 		getPosts: ({commit}) => {
 			posts.get().then(response=>{
-				console.log(response.body)
 				commit("getPosts", response.body)
 			}), response =>{
 				alert("error")
@@ -60,6 +69,9 @@ export const store = new Vuex.Store({
 			}, response=>{
 				alert("error")
 			})
+		},
+		clearFormErrors: ({commit}) =>{
+			commit("clearFormErrors")
 		}
 	}
 })

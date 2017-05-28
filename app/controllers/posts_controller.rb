@@ -21,7 +21,7 @@ class PostsController < ApplicationController
       if @post.save
         format.json { render json: @post }
       else
-        format.json { render json: @team.errors, status: :unprocessable_entity }
+        format.json { render json: @post.errors, status: :unprocessable_entity }
       end
     end
 	end

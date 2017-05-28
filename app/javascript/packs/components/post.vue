@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div v-if="typeof(post) != 'undefined'">
 		<!-- <h1>{{post.title}}</h1> -->
 		<!-- <p>{{post.content}}</p> -->
 		<h1>{{post.title}}</h1>
