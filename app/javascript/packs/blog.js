@@ -12,6 +12,14 @@ import { routes } from './routes.js'
 import { store } from './store/store.js'
 import BootstrapVue from 'bootstrap-vue'
 import lodash from 'lodash'
+import Auth from 'j-toker'
+
+Auth.configure({
+	apiUrl: 'http://localhost:3000/'
+});
+
+window.auth = Auth
+export const jtoker = Auth
 
 Vue.use(VueRouter)
 

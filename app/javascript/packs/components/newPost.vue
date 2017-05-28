@@ -22,10 +22,12 @@
 
 <script>
 	import { mapGetters, mapActions } from 'vuex';
+	import { jtoker } from '../blog.js'
 
 	export default {
 		created(){
 			this.clearFormErrors()
+			console.log(jtoker.user.signedIn)
 		},
 		data: ()=>{
 			return {

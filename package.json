@@ -17,6 +17,7 @@
     "extract-text-webpack-plugin": "^2.1.0",
     "file-loader": "^0.11.1",
     "glob": "^7.1.2",
+    "j-toker": "^0.0.10-beta3",
     "js-yaml": "^3.8.4",
     "lodash": "^4.17.4",
     "node-sass": "^4.5.3",
