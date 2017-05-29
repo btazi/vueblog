@@ -1,6 +1,7 @@
 class PostsController < ApplicationController
 	before_action :get_posts, only: [:index]
 	before_action :get_post, only: [:show, :destroy]
+	before_action :authenticate_user!, only: [:destroy]
 
 	def index
 		render json: @posts

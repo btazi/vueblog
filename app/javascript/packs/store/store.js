@@ -2,21 +2,35 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import VueResource from 'vue-resource'
 import { router } from '../blog.js'
+import Auth from 'j-toker'
+import $ from 'jquery'
+import jQuery from 'jquery'
+
+window.$ = $
+window.jQuery = jQuery
+window.auth = Auth
+
+Auth.configure({
+	apiUrl: 'http://localhost:3000/'
+});
+
+$.ajaxSetup({
+  beforeSend: function(xhr, settings) {
+    auth.appendAuthHeaders(xhr, settings);
+  }
+});
 
 Vue.use(Vuex)
 Vue.use(VueResource)
 
-Vue.http.options.root = "http://localhost:3000/"
-Vue.http.headers.common['X-CSRF-Token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-
 var post = Vue.resource('posts/{id}');
 var posts = Vue.resource('posts');
+console.log(localStorage.signedIn)
 
 export const store = new Vuex.Store({
-	state: {
-		posts: [
-		],
-		formErrors: {}
+	state: { posts: [ ],
+		formErrors: {},
+		signedIn: (localStorage.signedIn == "true")
 	},
 	getters: {
 		posts: state=> {
@@ -27,6 +41,9 @@ export const store = new Vuex.Store({
 		},
 		formErrors: state=> {
 			return state.formErrors
+		},
+		signedIn: state=>{
+			return state.signedIn
 		}
 	},
 	mutations: {
@@ -46,6 +63,12 @@ export const store = new Vuex.Store({
 		},
 		clearFormErrors: (state) =>{
 			state.formErrors = {}
+		},
+		signIn: (state) =>{
+			state.signedIn = true
+		},
+		signOut: (state) =>{
+			state.signedIn = false
 		}
 	},
 	actions: {
@@ -64,14 +87,40 @@ export const store = new Vuex.Store({
 			}
 		},
 		deletePost: ({commit}, payload) =>{
-			post.delete({id: payload.id}).then(response=>{
-				commit("deletePost", payload.id)
-			}, response=>{
-				alert("error")
+			$.ajax({
+				url: "http://localhost:3000/posts/" + payload.id,
+				data: {id: payload.id},
+				type: 'DELETE',
+				success: ()=> {
+					commit("deletePost", payload.id)
+				},
+				error: ()=> {
+					alert("error")
+				}
 			})
 		},
 		clearFormErrors: ({commit}) =>{
 			commit("clearFormErrors")
-		}
+		},
+		signIn: ({commit}) =>{
+			$.auth.emailSignIn({email: "tasibadr@gmail.com", password: "azsqazsq"})
+			if($.auth.user.signedIn){
+				localStorage.signedIn = true
+				commit("signIn")
+			} else {
+				localStorage.signedIn = false
+				commit("signOut")
+			}
+		},
+		signOut: ({commit}) =>{
+			$.auth.signOut()
+			if($.auth.user.signedIn){
+				localStorage.signedIn = true
+				commit("signIn")
+			} else {
+				localStorage.signedIn = false
+				commit("signOut")
+			}
+		},
 	}
 })

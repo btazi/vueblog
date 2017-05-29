@@ -8,6 +8,8 @@
 			</li>
 		</ul>
 		<h3 v-if="posts.length == 0">There is no post<router-link :to="{name: 'newPost'}"> add a new one?</router-link></h3>
+		<button @click="signIn" v-if="!signedIn">sign in</button>
+		<button @click="signOut" v-if="signedIn">sign out</button>
 	</div>
 </template>
 
@@ -20,13 +22,16 @@
 		},
 		computed: {
 			...mapGetters([
-				'posts'
+				'posts',
+				'signedIn'
 			])
 		},
 		methods: {
 			...mapActions([
 				'getPosts',
-				'deletePost'
+				'deletePost',
+				'signIn',
+				'signOut'
 			])
 		}
 	}
