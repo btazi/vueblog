@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import Vuex from 'vuex'
+import Vuex from 'vuex' 
 import VueResource from 'vue-resource'
 import { router } from '../blog.js'
 import Auth from 'j-toker'
@@ -103,24 +103,22 @@ export const store = new Vuex.Store({
 			commit("clearFormErrors")
 		},
 		signIn: ({commit}) =>{
-			$.auth.emailSignIn({email: "tasibadr@gmail.com", password: "azsqazsq"})
-			if($.auth.user.signedIn){
-				localStorage.signedIn = true
+			$.auth.emailSignIn({email: "tasibadr@gmail.com", password: "azsqazsq"}).then(()=>{
+				localStorage.signedIn = true //refactor this later
 				commit("signIn")
-			} else {
+			}).fail(()=>{
 				localStorage.signedIn = false
 				commit("signOut")
-			}
+			})
 		},
 		signOut: ({commit}) =>{
-			$.auth.signOut()
-			if($.auth.user.signedIn){
+			$.auth.signOut().then(()=>{
+				localStorage.signedIn = false //refactor this later
+				commit("signOut")
+			}).fail(()=>{
 				localStorage.signedIn = true
 				commit("signIn")
-			} else {
-				localStorage.signedIn = false
-				commit("signOut")
-			}
+			})
 		},
 	}
 })
